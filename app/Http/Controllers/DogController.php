@@ -16,10 +16,7 @@ class DogController extends Controller
     {
         $dogs = auth()->user()->dogs;
  
-        return response()->json([
-            'success' => true,
-            'data' => $dogs
-        ]);
+        return response()->json($dogs);
     }
 
     /**
