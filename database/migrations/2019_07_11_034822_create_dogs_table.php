@@ -19,13 +19,13 @@ class CreateDogsTable extends Migration
             $table->string('name');
             $table->integer('age');
             $table->string('breed');
-            $table->string('photo_url');
+            $table->string('photo_url')->default('pet-placeholder.png');;
             $table->timestamps();
     
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');
-            });
+        });
     }
 
     /**

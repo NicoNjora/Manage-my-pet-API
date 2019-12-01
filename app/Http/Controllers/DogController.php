@@ -40,15 +40,44 @@ class DogController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'breed' => 'required',
-            'age' => 'required|integer',
-            'photo_url' => 'required'
+            'age' => 'required|integer'
         ]);
- 
+
+        if($request->hasFile('image')) {
+            
+            $file = $request->file('image');
+
+            if(!$file->isValid()) {
+                return response()->json(['invalid_file_upload'], 400);
+            }
+
+            // Local
+            $file_name = 'pet-' . $request->breed . time() .'.'. $file->getClientOriginalExtension();
+            $path = public_path() . '/uploads/pets/';
+            $file->move($path, $file_name);
+
+            $dog = new Dog();
+            $dog->name = $request->name;
+            $dog->breed = $request->breed;
+            $dog->age = $request->age;
+            $dog->photo_url = $file_name;
+
+            if (auth()->user()->dogs()->save($dog))
+                return response()->json([
+                    'success' => true,
+                    'data' => $dog->toArray()
+                ]);
+            else
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Dog information could not be added'
+                ], 500);
+        }
+        
         $dog = new Dog();
         $dog->name = $request->name;
         $dog->breed = $request->breed;
         $dog->age = $request->age;
-        $dog->photo_url = $request->photo_url;
  
         if (auth()->user()->dogs()->save($dog))
             return response()->json([
@@ -94,14 +123,43 @@ class DogController extends Controller
     public function update(Request $request, $id)
     {
         $dog = auth()->user()->dogs()->find($id);
- 
+    
         if (!$dog) {
             return response()->json([
                 'success' => false,
                 'message' => 'Dog with id ' . $id . ' not found'
             ], 400);
         }
- 
+
+        if($request->hasFile('image')) {
+            
+            $file = $request->file('image');
+
+            if(!$file->isValid()) {
+                return response()->json(['invalid_file_upload'], 400);
+            }
+
+            // Local
+            $file_name = 'pet-' . $request->breed . time() .'.'. $file->getClientOriginalExtension();
+            $path = public_path() . '/uploads/pets/';
+            $file->move($path, $file_name);
+
+            $dog->name = $request->name ? $request->name : $dog->name;
+            $dog->age = $request->age ? $request->age : $dog->age;
+            $dog->breed = $request->breed ? $request->breed : $dog->breed;      
+            $dog->photo_url = $file_name ? $file_name : $dog->photo_url;      
+
+            $updated = $dog->save();
+
+            if ($updated)
+                return response()->json(auth()->user()->dogs(), 200);
+            else
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Dog could not be updated'
+                ], 500);
+        }
+
         $updated = $dog->fill($request->all())->save();
  
         if ($updated)

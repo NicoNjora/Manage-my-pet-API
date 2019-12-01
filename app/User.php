@@ -42,4 +42,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Dog');
     }
+
+    public function vaccines()
+    {
+        return $this->hasManyThrough('App\Vaccine', 'App\Dog');
+    }
 }
