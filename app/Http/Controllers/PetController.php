@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Dog;
+use App\Pet;
 use Illuminate\Http\Request;
 
-class DogController extends Controller
+class PetController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +14,9 @@ class DogController extends Controller
      */
     public function index()
     {
-        $dogs = auth()->user()->dogs;
+        $pets = auth()->user()->pets;
  
-        return response()->json($dogs);
+        return response()->json($pets);
     }
 
     /**
@@ -40,7 +40,10 @@ class DogController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'breed' => 'required',
-            'age' => 'required|integer'
+            'date_born' => 'required|date',
+            'category_id' => 'required|integer',
+            'breed_id' => 'required|integer',
+            'gender' => 'required|integer'
         ]);
 
         if($request->hasFile('image')) {
@@ -56,38 +59,45 @@ class DogController extends Controller
             $path = public_path() . '/uploads/pets/';
             $file->move($path, $file_name);
 
-            $dog = new Dog();
-            $dog->name = $request->name;
-            $dog->breed = $request->breed;
-            $dog->age = $request->age;
-            $dog->photo_url = $file_name;
+            $pet = new Pet();
+            $pet->name = $request->name;
+            $pet->breed_id = $request->breed_id;
+            $pet->date_born = $request->date_born;
+            $pet->color = $request->color;
+            $pet->category_id = $request->category_id;
+            $pet->gender = $request->gender;
+            $pet->photo_url = $file_name;
 
-            if (auth()->user()->dogs()->save($dog))
+            if (auth()->user()->pets()->save($pet))
                 return response()->json([
                     'success' => true,
-                    'data' => $dog->toArray()
+                    'data' => $pet->toArray()
                 ]);
             else
                 return response()->json([
                     'success' => false,
-                    'message' => 'Dog information could not be added'
+                    'message' => 'Pet information could not be added'
                 ], 500);
         }
         
-        $dog = new Dog();
-        $dog->name = $request->name;
-        $dog->breed = $request->breed;
-        $dog->age = $request->age;
- 
-        if (auth()->user()->dogs()->save($dog))
+        $pet = new Pet();
+        $pet->name = $request->name;
+        $pet->breed_id = $request->breed_id;
+        $pet->date_born = $request->date_born;
+        $pet->color = $request->color;
+        $pet->category_id = $request->category_id;
+        $pet->gender = $request->gender;
+
+        
+        if (auth()->user()->pets()->save($pet))
             return response()->json([
                 'success' => true,
-                'data' => $dog->toArray()
+                'data' => $pet->toArray()
             ]);
         else
             return response()->json([
                 'success' => false,
-                'message' => 'Dog information could not be added'
+                'message' => 'Pet information could not be added'
             ], 500);
     }
 
@@ -122,12 +132,12 @@ class DogController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $dog = auth()->user()->dogs()->find($id);
+        $pet = auth()->user()->pets()->find($id);
     
-        if (!$dog) {
+        if (!$pet) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dog with id ' . $id . ' not found'
+                'message' => 'Pet with id ' . $id . ' not found'
             ], 400);
         }
 
@@ -144,23 +154,26 @@ class DogController extends Controller
             $path = public_path() . '/uploads/pets/';
             $file->move($path, $file_name);
 
-            $dog->name = $request->name ? $request->name : $dog->name;
-            $dog->age = $request->age ? $request->age : $dog->age;
-            $dog->breed = $request->breed ? $request->breed : $dog->breed;      
-            $dog->photo_url = $file_name ? $file_name : $dog->photo_url;      
+            $pet->name = $request->name ? $request->name : $pet->name;
+            $pet->date_born = $request->date_born ? $request->date_born : $pet->date_born;
+            $pet->gender = $request->gender ? $request->gender : $pet->gender;
+            $pet->color = $request->color ? $request->color : $pet->color;
+            $pet->breed_id = $request->breed_id ? $request->breed_id : $pet->breed_id;
+            $pet->category_id = $request->category_id ? $request->category_id : $pet->category_id;
+            $pet->photo_url = $file_name ? $file_name : $pet->photo_url;      
 
-            $updated = $dog->save();
+            $updated = $pet->save();
 
             if ($updated)
-                return response()->json(auth()->user()->dogs(), 200);
+                return response()->json(auth()->user()->pets(), 200);
             else
                 return response()->json([
                     'success' => false,
-                    'message' => 'Dog could not be updated'
+                    'message' => 'Pet could not be updated'
                 ], 500);
         }
 
-        $updated = $dog->fill($request->all())->save();
+        $updated = $pet->fill($request->all())->save();
  
         if ($updated)
             return response()->json([
@@ -169,7 +182,7 @@ class DogController extends Controller
         else
             return response()->json([
                 'success' => false,
-                'message' => 'Dog could not be updated'
+                'message' => 'Pet could not be updated'
             ], 500);
     }
 
@@ -181,23 +194,23 @@ class DogController extends Controller
      */
     public function destroy($id)
     {
-        $dog = auth()->user()->dogs()->find($id);
+        $pet = auth()->user()->pets()->find($id);
  
-        if (!$dog) {
+        if (!$pet) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dog with id ' . $id . ' not found'
+                'message' => 'Pet with id ' . $id . ' not found'
             ], 400);
         }
  
-        if ($dog->delete()) {
+        if ($pet->delete()) {
             return response()->json([
                 'success' => true
             ]);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Dog could not be deleted'
+                'message' => 'Pet could not be deleted'
             ], 500);
         }
     }

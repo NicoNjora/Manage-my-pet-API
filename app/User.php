@@ -38,13 +38,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function dogs()
+    public function pets()
     {
-        return $this->hasMany('App\Dog');
+        return $this->hasMany('App\Pet');
     }
 
     public function vaccines()
     {
-        return $this->hasManyThrough('App\Vaccine', 'App\Dog');
+        return $this->hasManyThrough('App\Vaccine', 'App\Pet');
     }
 }

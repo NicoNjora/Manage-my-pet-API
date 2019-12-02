@@ -10,9 +10,9 @@ class Vaccine extends Model
         'name', 'details'
     ];
 
-    public function dogs()
+    public function pets()
     {
-        return $this->belongsToMany('App\Dog', 'dog_vaccine')->withTimestamps();
+        return $this->belongsToMany('App\Pet', 'pet_vaccine')->withTimestamps();
     }
 
 }

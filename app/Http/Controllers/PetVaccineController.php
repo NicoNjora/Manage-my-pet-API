@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Dog;
+use App\Pet;
 use App\Vaccine;
 use Illuminate\Http\Request;
 
-class DogVaccineController extends Controller
+class PetVaccineController extends Controller
 {
     public function store(Request $request)
     {
-        // TODO: Complete this with save logic for vaccine and dog pivot table
+        // TODO: Complete this with save logic for vaccine and pet pivot table
         $vaccine = Vaccine::where('id', $request['vaccine_id'])->first();
-        $dog = auth()->user()->dogs()->find($request['dog_id']);
+        $pet = auth()->user()->pets()->find($request['pet_id']);
     
         if (!$vaccine) {
             return response()->json([
@@ -21,12 +21,12 @@ class DogVaccineController extends Controller
             ], 400);
         }
 
-        $dog->vaccines()->sync($vaccine, false);
-        $dog->vaccines()->getRelatedIds();
+        $pet->vaccines()->sync($vaccine, false);
+        $pet->vaccines()->getRelatedIds();
 
         return response()->json([
             'success' => true,
-            'data' => $dog->toArray()
+            'data' => $pet->toArray()
         ]);
     }
 }

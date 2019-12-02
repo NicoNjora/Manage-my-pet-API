@@ -24,5 +24,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user', 'PassportController@details');
     Route::put('user/{id}', 'PassportController@update');
  
-    Route::resource('dogs', 'DogController');
+    Route::resource('pets', 'PetController');
+    Route::resource('categories', 'CategoryController')->only([
+        'index'
+    ]);
+    Route::resource('breeds', 'BreedController')->only([
+        'index'
+    ]);
 });
