@@ -39,11 +39,10 @@ class PetController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
-            'breed' => 'required',
             'date_born' => 'required|date',
             'category_id' => 'required|integer',
             'breed_id' => 'required|integer',
-            'gender' => 'required|integer'
+            'gender' => 'required|string'
         ]);
 
         if($request->hasFile('image')) {
