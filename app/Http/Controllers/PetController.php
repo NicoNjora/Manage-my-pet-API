@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Pet;
 use Illuminate\Http\Request;
+use App\Http\Resources\PetResourceCollection;
+use App\Http\Resources\PetResource;
 
 class PetController extends Controller
 {
@@ -16,7 +18,8 @@ class PetController extends Controller
     {
         $pets = auth()->user()->pets;
  
-        return response()->json($pets);
+        // return new PetResourceCollection(auth()->user()->pets);
+        return new PetResourceCollection(PetResource::collection(Pet::all()));
     }
 
     /**

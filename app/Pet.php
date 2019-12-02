@@ -21,4 +21,14 @@ class Pet extends Model
     {
         return $this->belongsToMany('App\Vaccine', 'pet_vaccine')->withTimestamps();
     }
+
+    public function category()
+    {
+        return $this->belongsTo('App\Category');
+    }
+
+    public function breed()
+    {
+        return $this->belongsTo('App\Breed');
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Breed;
+use App\Http\Resources\BreedResourceCollection;
 
 class BreedController extends Controller
 {
@@ -14,8 +15,6 @@ class BreedController extends Controller
      */
     public function index()
     {
-        $breeds = Breed::all();
- 
-        return response()->json($breeds);
+        return new BreedResourceCollection(Breed::all());
     }
 }
